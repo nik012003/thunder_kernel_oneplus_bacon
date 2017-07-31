@@ -1,4 +1,4 @@
-/* Copyright (c) 2002,2007-2014, The Linux Foundation. All rights reserved.
+/* Copyright (c) 2002,2007-2014,2016, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -472,11 +472,19 @@ static int kgsl_contiguous_vmfault(struct kgsl_memdesc *memdesc,
 
 static void kgsl_cma_coherent_free(struct kgsl_memdesc *memdesc)
 {
-	if (memdesc->hostptr) {
-		atomic_sub(memdesc->size, &kgsl_driver.stats.vmalloc);
-		dma_free_coherent(memdesc->dev, memdesc->size,
-				memdesc->hostptr, memdesc->physaddr);
+	int ret = 0;
+	mutex_lock(&kernel_map_global_lock);
+	if (!memdesc->hostptr) {
+		memdesc->hostptr = ioremap(memdesc->physaddr, memdesc->size);
+		if (!memdesc->hostptr) {
+			KGSL_CORE_ERR("ioremap failed, addr:0x%pK, size:0x%x\n",
+				memdesc->hostptr, memdesc->size);
+			ret = -ENOMEM;
+			goto done;
+		}
 	}
+done:
+	mutex_unlock(&kernel_map_global_lock);
 }
 
 /* Global - also used by kgsl_drm.c */
@@ -529,10 +537,17 @@ _kgsl_sharedmem_page_alloc(struct kgsl_memdesc *memdesc,
 			struct kgsl_pagetable *pagetable,
 			size_t size)
 {
-	int ret = 0;
-	int page_size, sglen_alloc, sglen = 0;
+	int pcount = 0, ret = 0;
+	int j, page_size, sglen_alloc, sglen = 0;
 	size_t len;
+	struct page **pages = NULL;
+	pgprot_t page_prot = pgprot_writecombine(PAGE_KERNEL);
+	void *ptr;
 	unsigned int align;
+
+	size = PAGE_ALIGN(size);
+	if (size == 0 || size > UINT_MAX)
+		return -EINVAL;
 
 	size = PAGE_ALIGN(size);
 	if (size == 0 || size > UINT_MAX)

@@ -1,4 +1,4 @@
-/* Copyright (c) 2012-2014, The Linux Foundation. All rights reserved.
+/* Copyright (c) 2012-2016, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -247,7 +247,7 @@ static int venus_hfi_write_queue(void *info, u8 *packet, u32 *rx_req_is_set)
 	venus_hfi_sim_modify_cmd_packet(packet);
 
 	if (msm_vidc_debug & VIDC_PKT) {
-		dprintk(VIDC_PKT, "%s: %pKK\n", __func__, qinfo);
+		dprintk(VIDC_PKT, "%s: %pK\n", __func__, qinfo);
 		venus_hfi_dump_packet(packet);
 	}
 
@@ -431,7 +431,7 @@ static int venus_hfi_read_queue(void *info, u8 *packet, u32 *pb_tx_req_is_set)
 	*pb_tx_req_is_set = (1 == queue->qhdr_tx_req) ? 1 : 0;
 	venus_hfi_hal_sim_modify_msg_packet(packet);
 	if (msm_vidc_debug & VIDC_PKT) {
-		dprintk(VIDC_PKT, "%s: %pKK\n", __func__, qinfo);
+		dprintk(VIDC_PKT, "%s: %pK\n", __func__, qinfo);
 		venus_hfi_dump_packet(packet);
 	}
 	dprintk(VIDC_DBG, "Out : ");
@@ -462,7 +462,7 @@ static int venus_hfi_alloc(struct venus_hfi_device *dev, void *mem,
 		rc = -ENOMEM;
 		goto fail_smem_alloc;
 	}
-	dprintk(VIDC_DBG, "venus_hfi_alloc:ptr=%pKK,size=%d",
+	dprintk(VIDC_DBG, "venus_hfi_alloc:ptr=%pK,size=%d",
 			alloc->kvaddr, size);
 	rc = msm_smem_cache_operations(dev->hal_client, alloc,
 		SMEM_CACHE_CLEAN);
@@ -482,7 +482,7 @@ fail_smem_alloc:
 static void venus_hfi_free(struct venus_hfi_device *dev, struct msm_smem *mem)
 {
 	if (!dev || !mem) {
-		dprintk(VIDC_ERR, "invalid param %pKK %pKK\n", dev, mem);
+		dprintk(VIDC_ERR, "invalid param %pK %pK\n", dev, mem);
 		return;
 	}
 	venus_hfi_power_enable(dev);
@@ -495,7 +495,7 @@ static void venus_hfi_write_register(struct venus_hfi_device *device, u32 reg,
 	u32 hwiosymaddr = reg;
 	u8 *base_addr;
 	if (!device) {
-		dprintk(VIDC_ERR, "Invalid params: %pKK\n", device);
+		dprintk(VIDC_ERR, "Invalid params: %pK\n", device);
 		return;
 	}
 
@@ -535,7 +535,7 @@ static int venus_hfi_read_register(struct venus_hfi_device *device, u32 reg)
 	int rc ;
 	u8 *base_addr;
 	if (!device) {
-		dprintk(VIDC_ERR, "Invalid params: %pKK\n", device);
+		dprintk(VIDC_ERR, "Invalid params: %pK\n", device);
 		return -EINVAL;
 	}
 
