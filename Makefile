@@ -377,7 +377,7 @@ KBUILD_CFLAGS   := -Wall -DNDEBUG -Wundef -Wstrict-prototypes -Wno-trigraphs \
 		   -Wno-duplicate-decl-specifier -Wno-bool-operation \
 		   -Wno-format-overflow -Wno-switch-unreachable \
 		   -Wno-logical-not-parentheses -Wno-misleading-indentation \
-		   -fno-delete-null-pointer-checks \
+		   -Wno-incompatible-pointer-types -fno-delete-null-pointer-checks \
 		   -mcpu=cortex-a15 -mtune=cortex-a15 -mfpu=neon-vfpv4 -marm \
 		   -ffast-math -fsingle-precision-constant \
 		   -fgcse-lm -fgcse-sm -fsched-spec-load -fforce-addr \

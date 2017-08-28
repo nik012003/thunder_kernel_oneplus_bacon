@@ -483,6 +483,8 @@ static void kgsl_cma_coherent_free(struct kgsl_memdesc *memdesc)
 			goto done;
 		}
 	}
+done:
+	mutex_unlock(&kernel_map_global_lock);
 }
 
 /* Global - also used by kgsl_drm.c */

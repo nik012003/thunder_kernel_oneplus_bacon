@@ -587,9 +587,6 @@ static int32_t msm_actuator_park_lens(struct msm_actuator_ctrl_t *a_ctrl)
 	next_lens_pos = a_ctrl->step_position_table[a_ctrl->curr_step_pos];
 	#ifdef CONFIG_MACH_MSM8974_14001  //niqiangbo@camera add to reduce actuator power down time @2015-09-01
 	if(a_ctrl->step_position_table[a_ctrl->total_steps] > 0) {
-	    if(is_15055_project())
-    	    init_park_pos = a_ctrl->step_position_table[a_ctrl->total_steps]/3;
-    	else
     	    init_park_pos = a_ctrl->step_position_table[a_ctrl->total_steps]/2;
 	}
 	#endif
@@ -623,11 +620,6 @@ static int32_t msm_actuator_park_lens(struct msm_actuator_ctrl_t *a_ctrl)
 		a_ctrl->i2c_tbl_index = 0;
 		/* Use typical damping time delay to avoid tick sound */
 		#ifdef CONFIG_MACH_MSM8974_14001
-		if(is_15055_project())
-		    usleep_range(5000, 6000);
-		else
-		    usleep_range(10000, 12000);
-		#else
 		usleep_range(10000, 12000);
 		#endif
 	}
@@ -695,7 +687,7 @@ static int32_t msm_actuator_init_step_table(struct msm_actuator_ctrl_t *a_ctrl,
 		for (; step_index <= step_boundary;
 			step_index++) {
 			cur_code += code_per_step;
-			if (cur_code < max_code_size)
+			if (cur_code < max_code_size) {
 				a_ctrl->step_position_table[step_index] =
 					cur_code;
 			} else {

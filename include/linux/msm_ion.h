@@ -249,7 +249,7 @@ int ion_handle_get_flags(struct ion_client *client, struct ion_handle *handle,
  * will be allocated from the partition specified via partition_num.
  * Returns 0 on success, negative value on error.
  */
-int ion_map_iommu(struct ion_client *client, struct ion_handle *handle,
+long unsigned int ion_map_iommu(struct ion_client *client, struct ion_handle *handle,
 			int domain_num, int partition_num, unsigned long align,
 			unsigned long iova_length, ion_phys_addr_t *iova,
 			unsigned long *buffer_size,
